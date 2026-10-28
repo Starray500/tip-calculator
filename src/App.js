@@ -5,9 +5,13 @@ export default function App() {
   const [percentage1, setPercentage1] = useState(0);
   const [percentage2, setPercentage2] = useState(0);
 
-  const tip = bill * ((percentage1 + percentage2) / 2 / 100);
-  const total = bill + tip;
+  function handleReset() {
+    setBill("");
+    setPercentage1(0);
+    setPercentage2(0);
+  }
 
+  const tip = bill * ((percentage1 + percentage2) / 2 / 100);
   return (
     <div>
       <BillInput bill={bill} setBill={setBill} />
@@ -21,8 +25,12 @@ export default function App() {
         percentage={percentage2}
         onSelect={setPercentage2}
       />
-      <Output bill={bill} tip={tip} total={total} />
-      <Reset />
+      {bill > 0 && (
+        <>
+          <Output bill={bill} tip={tip} />
+          <Reset onReset={handleReset} />
+        </>
+      )}
     </div>
   );
 }
@@ -56,15 +64,19 @@ function SelectPercentage({ text, percentage, onSelect }) {
   );
 }
 
-function Output({ bill, tip, total }) {
+function Output({ bill, tip }) {
   return (
     <div>
       <h1>
-        You will pay ${total} (${bill} + {tip} tip)
+        You will pay ${bill + tip} (${bill} + {tip} tip)
       </h1>
     </div>
   );
 }
-function Reset() {
-  return <div></div>;
+function Reset({ onReset }) {
+  return (
+    <div>
+      <button onClick={onReset}>Reset</button>
+    </div>
+  );
 }
